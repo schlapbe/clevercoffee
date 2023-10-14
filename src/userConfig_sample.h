@@ -84,6 +84,9 @@ enum MACHINE {
 #define FLUSHTIME      10000 // time in ms the 3-way valve is open -> backflush
 #define MAXFLUSHCYCLES 5     // number of cycles the backflush should run, 0 = disabled
 
+// Rotary Encoder Menu
+#define ROTARY_MENU 0
+
 // PlatformIO OTA
 #define OTA     true      // true = OTA activated, false = OTA deactivated
 #define OTAPASS "otapass" // Password for OTA updates

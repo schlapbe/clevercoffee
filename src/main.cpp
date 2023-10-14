@@ -54,6 +54,18 @@ hw_timer_t* timer = NULL;
 #include <Wire.h>
 #endif
 
+#if (ROTARY_MENU == 1)
+    #include <LCDMenuLib2.h>
+    #include "menu.h"
+    #include <ESP32Encoder.h>
+    ESP32Encoder encoder;
+    #include "button.h"
+    button_event_t ev;
+    QueueHandle_t button_events = button_init(PIN_BIT(PIN_ROTARY_SW));
+    boolean menuOpen = false;
+#endif
+
+
 #if OLED_DISPLAY == 3
 #include <SPI.h>
 #endif
@@ -1826,6 +1838,17 @@ void setup() {
         waterSensor = new IOSwitch(PIN_WATERSENSOR, (WATER_SENS_TYPE == Switch::NORMALLY_OPEN ? GPIOPin::IN_PULLDOWN : GPIOPin::IN_PULLUP), Switch::TOGGLE, WATER_SENS_TYPE);
     }
 
+    #if(ROTARY_MENU == 1)
+        pinMode(PIN_ROTARY_DT, INPUT_PULLUP);
+        pinMode(PIN_ROTARY_CLK, INPUT_PULLUP);
+        pinMode(PIN_ROTARY_SW, INPUT_PULLUP);
+
+        encoder.attachFullQuad(PIN_ROTARY_DT, PIN_ROTARY_CLK);
+        encoder.setCount(0);
+
+        setupMenu();
+    #endif
+
 #if OLED_DISPLAY != 0
     u8g2.setI2CAddress(oled_i2c * 2);
     u8g2.begin();
@@ -1920,8 +1943,23 @@ void setup() {
 void loop() {
     looppid();
     loopLED();
-
     loopWater();
+
+    #if ROTARY_MENU == 1
+        if (menuOpen == false) {
+            if (xQueueReceive(button_events, &ev, 1000/portTICK_PERIOD_MS)) {
+                if (ev.event == BUTTON_DOWN) {
+                    menuOpen = true;
+                    debugPrintf("Opening Menu!\n");
+                    displayMenu();
+                }
+            }
+        }
+
+        if (menuOpen == true) {
+            LCDML.loop();
+        }
+    #endif
 
     Logger::update();
 }
@@ -2044,12 +2082,18 @@ void looppid() {
 
     // Check if PID should run or not. If not, set to manual and force output to zero
 #if OLED_DISPLAY != 0
-    unsigned long currentMillisDisplay = millis();
+#if defined(ESP32) && ROTARY_MENU == 1
+    if (!menuOpen) {
+#endif
+        unsigned long currentMillisDisplay = millis();
 
-    if (currentMillisDisplay - previousMillisDisplay >= intervalDisplay) {
-        previousMillisDisplay = currentMillisDisplay;
-        printScreen(); // refresh display
+        if (currentMillisDisplay - previousMillisDisplay >= intervalDisplay) {
+            previousMillisDisplay = currentMillisDisplay;
+            printScreen(); // refresh display
+        }
+#if defined(ESP32) && ROTARY_MENU == 1
     }
+#endif
 #endif
 
     if (machineState == kPidDisabled || machineState == kWaterEmpty || machineState == kSensorError || machineState == kEmergencyStop || machineState == kEepromError || machineState == kStandby || brewPIDDisabled) {
