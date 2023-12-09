@@ -54,18 +54,6 @@ hw_timer_t* timer = NULL;
 #include <Wire.h>
 #endif
 
-#if (ROTARY_MENU == 1)
-    #include <LCDMenuLib2.h>
-    #include "menu.h"
-    #include <ESP32Encoder.h>
-    ESP32Encoder encoder;
-    #include "button.h"
-    button_event_t ev;
-    QueueHandle_t button_events = button_init(PIN_BIT(PIN_ROTARY_SW));
-    boolean menuOpen = false;
-#endif
-
-
 #if OLED_DISPLAY == 3
 #include <SPI.h>
 #endif
@@ -459,6 +447,17 @@ const unsigned long intervalDisplay = 100;
 #include "powerHandler.h"
 #include "scaleHandler.h"
 #include "steamHandler.h"
+
+#if (ROTARY_MENU == 1)
+    #include <LCDMenuLib2.h>
+    #include <ESP32Encoder.h>
+    ESP32Encoder encoder;
+    #include "button.h"
+    button_event_t ev;
+    QueueHandle_t button_events = button_init(PIN_BIT(PIN_ROTARY_SW));
+    boolean menuOpen = false;
+    #include "menu.h"
+#endif
 
 // Emergency stop if temp is too high
 void testEmergencyStop() {
@@ -1946,17 +1945,19 @@ void loop() {
     loopWater();
 
     #if ROTARY_MENU == 1
-        if (menuOpen == false) {
-            if (xQueueReceive(button_events, &ev, 1000/portTICK_PERIOD_MS)) {
-                if (ev.event == BUTTON_DOWN) {
+        if (!menuOpen) {
+            if (xQueueReceive(button_events, &ev, 1/portTICK_PERIOD_MS)) {
+                if (ev.event == BUTTON_UP) {
                     menuOpen = true;
-                    debugPrintf("Opening Menu!\n");
+                    #if ROTARY_MENU_DEBUG == 1
+                        debugPrintf("Opening Menu!\n");
+                    #endif
                     displayMenu();
                 }
             }
         }
 
-        if (menuOpen == true) {
+        if (menuOpen) {
             LCDML.loop();
         }
     #endif
@@ -2082,7 +2083,7 @@ void looppid() {
 
     // Check if PID should run or not. If not, set to manual and force output to zero
 #if OLED_DISPLAY != 0
-#if defined(ESP32) && ROTARY_MENU == 1
+#if ROTARY_MENU == 1 // only draw the display template if the menu is not open
     if (!menuOpen) {
 #endif
         unsigned long currentMillisDisplay = millis();
@@ -2091,7 +2092,7 @@ void looppid() {
             previousMillisDisplay = currentMillisDisplay;
             printScreen(); // refresh display
         }
-#if defined(ESP32) && ROTARY_MENU == 1
+#if ROTARY_MENU == 1
     }
 #endif
 #endif

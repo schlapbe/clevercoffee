@@ -94,29 +94,31 @@ int writeSysParamsToStorage(void);
 
 #define ENCODER_CLICKS_PER_NOTCH 4
 
-// menu position and size
-#define _LCDML_DISP_box_x0            0              // start point (x0, y0)
-#define _LCDML_DISP_box_y0            0              // start point (x0, y0)
-static const int _LCDML_DISP_box_x1 = SCREEN_WIDTH;  // width x  (x0 + width)
-static const int _LCDML_DISP_box_y1 = SCREEN_HEIGHT; // hight y  (y0 + height)
+// Menu position and size
+#define _LCDML_DISP_box_x0 0
+#define _LCDML_DISP_box_y0 0
 
-#define _LCDML_DISP_scrollbar_w       6  // scrollbar width (if this value is < 3, the scrollbar is disabled)
-#define _LCDML_DISP_cols_max          ((_LCDML_DISP_box_x1-_LCDML_DISP_box_x0)/_LCDML_DISP_font_w)
-#define _LCDML_DISP_rows_max          ((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0-((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0)/_LCDML_DISP_font_h))/_LCDML_DISP_font_h)
-#define _LCDML_DISP_rows              _LCDML_DISP_rows_max  // max rows
-#define _LCDML_DISP_cols              20                   // max cols
+static const int _LCDML_DISP_box_x1 = SCREEN_WIDTH;
+static const int _LCDML_DISP_box_y1 = SCREEN_HEIGHT;
+
+#define _LCDML_DISP_scrollbar_w 6
+#define _LCDML_DISP_cols_max ((_LCDML_DISP_box_x1-_LCDML_DISP_box_x0)/_LCDML_DISP_font_w)
+#define _LCDML_DISP_rows_max ((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0-((_LCDML_DISP_box_y1-_LCDML_DISP_box_y0)/_LCDML_DISP_font_h))/_LCDML_DISP_font_h)
+#define _LCDML_DISP_rows _LCDML_DISP_rows_max
+#define _LCDML_DISP_cols 20
 #define _LCDML_DISP_draw_frame 0
 
-// settings for u8g lib and LCD
+// Settings for u8g lib and LCD
 static const int _LCDML_DISP_w = SCREEN_WIDTH;
 static const int _LCDML_DISP_h = SCREEN_HEIGHT;
 
-// font settings
-#define _LCDML_DISP_font              u8g_font_6x13  // u8glib font (more fonts under u8g.h line 1520 ...)
-#define _LCDML_DISP_font_w            4              // font width
-#define _LCDML_DISP_font_h            13             // font height
+    // Font settings
+    #define _LCDML_DISP_font u8g_font_6x11
+    #define _LCDML_DISP_font_w 4
+    #define _LCDML_DISP_font_h 11
 
-// cursor settings
-#define _LCDML_DISP_cursor_char       "X"            // cursor char
-#define _LCDML_DISP_cur_space_before  1              // cursor space between
-#define _LCDML_DISP_cur_space_behind  4              // cursor space between
+// Cursor settings
+#define _LCDML_DISP_cursor_char "X"
+#define _LCDML_DISP_cur_space_before 2
+#define _LCDML_DISP_cur_space_behind 4
+
