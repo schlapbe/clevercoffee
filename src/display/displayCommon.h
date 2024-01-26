@@ -311,7 +311,7 @@ bool displayShottimer() {
     return false;
 }
 
-#if (ROTARY_MENU == 1)
+#if (FEATURE_ROTARY_MENU == 1)
 
 void displayNumericalMenuSettingWithUnit(double temp, const char* name, const char* unit) {
     u8g2.clearBuffer();

@@ -112,10 +112,10 @@ static const int _LCDML_DISP_box_y1 = SCREEN_HEIGHT;
 static const int _LCDML_DISP_w = SCREEN_WIDTH;
 static const int _LCDML_DISP_h = SCREEN_HEIGHT;
 
-    // Font settings
-    #define _LCDML_DISP_font u8g_font_6x11
-    #define _LCDML_DISP_font_w 4
-    #define _LCDML_DISP_font_h 11
+// Font settings
+#define _LCDML_DISP_font u8g_font_6x11
+#define _LCDML_DISP_font_w 4
+#define _LCDML_DISP_font_h 11
 
 // Cursor settings
 #define _LCDML_DISP_cursor_char "X"

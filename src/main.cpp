@@ -448,7 +448,7 @@ const unsigned long intervalDisplay = 100;
 #include "scaleHandler.h"
 #include "steamHandler.h"
 
-#if (ROTARY_MENU == 1)
+#if (FEATURE_ROTARY_MENU == 1)
     #include <LCDMenuLib2.h>
     #include <ESP32Encoder.h>
     ESP32Encoder encoder;
@@ -1837,16 +1837,16 @@ void setup() {
         waterSensor = new IOSwitch(PIN_WATERSENSOR, (WATER_SENS_TYPE == Switch::NORMALLY_OPEN ? GPIOPin::IN_PULLDOWN : GPIOPin::IN_PULLUP), Switch::TOGGLE, WATER_SENS_TYPE);
     }
 
-    #if(ROTARY_MENU == 1)
-        pinMode(PIN_ROTARY_DT, INPUT_PULLUP);
-        pinMode(PIN_ROTARY_CLK, INPUT_PULLUP);
-        pinMode(PIN_ROTARY_SW, INPUT_PULLUP);
+#if(FEATURE_ROTARY_MENU == 1)
+    pinMode(PIN_ROTARY_DT, INPUT_PULLUP);
+    pinMode(PIN_ROTARY_CLK, INPUT_PULLUP);
+    pinMode(PIN_ROTARY_SW, INPUT_PULLUP);
 
-        encoder.attachFullQuad(PIN_ROTARY_DT, PIN_ROTARY_CLK);
-        encoder.setCount(0);
+    encoder.attachFullQuad(PIN_ROTARY_DT, PIN_ROTARY_CLK);
+    encoder.setCount(0);
 
-        setupMenu();
-    #endif
+    setupMenu();
+#endif
 
 #if OLED_DISPLAY != 0
     u8g2.setI2CAddress(oled_i2c * 2);
@@ -1944,7 +1944,7 @@ void loop() {
     loopLED();
     loopWater();
 
-    #if ROTARY_MENU == 1
+    #if FEATURE_ROTARY_MENU == 1
         if (!menuOpen) {
             if (xQueueReceive(button_events, &ev, 1/portTICK_PERIOD_MS)) {
                 if (ev.event == BUTTON_UP) {
@@ -2083,7 +2083,7 @@ void looppid() {
 
     // Check if PID should run or not. If not, set to manual and force output to zero
 #if OLED_DISPLAY != 0
-#if ROTARY_MENU == 1 // only draw the display template if the menu is not open
+#if FEATURE_ROTARY_MENU == 1 // only draw the display template if the menu is not open
     if (!menuOpen) {
 #endif
         unsigned long currentMillisDisplay = millis();
@@ -2092,7 +2092,7 @@ void looppid() {
             previousMillisDisplay = currentMillisDisplay;
             printScreen(); // refresh display
         }
-#if ROTARY_MENU == 1
+#if FEATURE_ROTARY_MENU == 1
     }
 #endif
 #endif
