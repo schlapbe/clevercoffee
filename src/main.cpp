@@ -330,6 +330,8 @@ Timer logbrew([&]() { LOGF(DEBUG, "(tB,T,hra) --> %5.2f %6.2f %8.2f", (double)(m
 // Embedded HTTP Server
 #include "embeddedWebserver.h"
 
+#include "menuHandler.h"
+
 enum SectionNames {
     sPIDSection,
     sTempSection,
@@ -1700,6 +1702,9 @@ void setup() {
     u8g2_prepare();
     displayLogo(String("Version "), String(sysVersion));
     delay(2000); // caused crash with wifi manager on esp8266, should be ok on esp32
+
+    initMenu(u8g2);
+
 #endif
 
     // Fallback offline
@@ -1919,7 +1924,14 @@ void looppid() {
 
     // Check if PID should run or not. If not, set to manual and force output to zero
 #if OLED_DISPLAY != 0
-    printDisplayTimer();
+    if (menu != nullptr) {
+        menu->EventHandler();
+        menu->Loop();
+    }
+
+    if (menu == nullptr || !menu->IsOpen()) {
+        printDisplayTimer();
+    }
 #endif
 
     if (machineState == kPidDisabled || machineState == kWaterEmpty || machineState == kSensorError || machineState == kEmergencyStop || machineState == kEepromError || machineState == kStandby || brewPIDDisabled) {
