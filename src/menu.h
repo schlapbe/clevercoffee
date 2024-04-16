@@ -47,7 +47,7 @@ void changeNumericalLoop(const char* readableName, const char* unit) {
 }
 
 int saveToStorage(sto_item_id_t name) {
-    storageSet(name, initialValue);
+    storageSet(name, initialValue, true);
     return storageCommit();
 }
 
@@ -240,7 +240,7 @@ boolean checkStandbyDisabled() {
 }
 
 boolean checkBrewModeScale() {
-    return BREWMODE == 2;
+    return BREWCONTROL_TYPE == 2;
 }
 
 boolean checkPonMEnabled() {
