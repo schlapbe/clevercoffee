@@ -332,7 +332,7 @@ void displayToggleMessage(const char* title, uint8_t mode) {
     u8g2.clearBuffer();
     u8g2.setCursor(0, 0);
     u8g2.print(title);
-    
+
     if (mode == 1) {
         u8g2.print(LANGSTRING_MENU_ON);
     }

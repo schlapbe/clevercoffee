@@ -449,14 +449,14 @@ const unsigned long intervalDisplay = 100;
 #include "steamHandler.h"
 
 #if (FEATURE_ROTARY_MENU == 1)
-    #include <LCDMenuLib2.h>
-    #include <ESP32Encoder.h>
-    ESP32Encoder encoder;
-    #include "button.h"
-    button_event_t ev;
-    QueueHandle_t button_events = button_init(PIN_BIT(PIN_ROTARY_SW));
-    boolean menuOpen = false;
-    #include "menu.h"
+#include <ESP32Encoder.h>
+#include <LCDMenuLib2.h>
+ESP32Encoder encoder;
+#include "button.h"
+button_event_t ev;
+QueueHandle_t button_events = button_init(PIN_BIT(PIN_ROTARY_SW));
+boolean menuOpen = false;
+#include "menu.h"
 #endif
 
 // Emergency stop if temp is too high
@@ -1837,7 +1837,7 @@ void setup() {
         waterSensor = new IOSwitch(PIN_WATERSENSOR, (WATER_SENS_TYPE == Switch::NORMALLY_OPEN ? GPIOPin::IN_PULLDOWN : GPIOPin::IN_PULLUP), Switch::TOGGLE, WATER_SENS_TYPE);
     }
 
-#if(FEATURE_ROTARY_MENU == 1)
+#if (FEATURE_ROTARY_MENU == 1)
     pinMode(PIN_ROTARY_DT, INPUT_PULLUP);
     pinMode(PIN_ROTARY_CLK, INPUT_PULLUP);
     pinMode(PIN_ROTARY_SW, INPUT_PULLUP);
@@ -1944,23 +1944,23 @@ void loop() {
     loopLED();
     loopWater();
 
-    #if FEATURE_ROTARY_MENU == 1
-        if (!menuOpen) {
-            if (xQueueReceive(button_events, &ev, 1/portTICK_PERIOD_MS)) {
-                if (ev.event == BUTTON_UP) {
-                    menuOpen = true;
-                    #if ROTARY_MENU_DEBUG == 1
-                        debugPrintf("Opening Menu!\n");
-                    #endif
-                    displayMenu();
-                }
+#if FEATURE_ROTARY_MENU == 1
+    if (!menuOpen) {
+        if (xQueueReceive(button_events, &ev, 1 / portTICK_PERIOD_MS)) {
+            if (ev.event == BUTTON_UP) {
+                menuOpen = true;
+#if ROTARY_MENU_DEBUG == 1
+                debugPrintf("Opening Menu!\n");
+#endif
+                displayMenu();
             }
         }
+    }
 
-        if (menuOpen) {
-            LCDML.loop();
-        }
-    #endif
+    if (menuOpen) {
+        LCDML.loop();
+    }
+#endif
 
     Logger::update();
 }
