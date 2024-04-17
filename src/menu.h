@@ -25,6 +25,10 @@ double menuRotaryLast = 0;
 double initialValue = 0;
 int last = 0;
 
+void clearMenu() {
+    // Necessary for LCDMenuLib constructor
+}
+
 void changeNumericalSetup(double value, const char* readableName, const char* unit) {
     if (LCDML.FUNC_setup()) {
         menuRotaryLast = encoder.getCount() / ENCODER_CLICKS_PER_NOTCH;
@@ -339,27 +343,22 @@ void menuControls(void) {
         LOG(DEBUG, "Menu: Down\n");
     }
     else {
-        if (xQueueReceive(button_events, &ev, 1 / portTICK_PERIOD_MS)) {
-            if (ev.event == BUTTON_UP) {
-                LOG(DEBUG, "Menu: Processing Click");
-                LCDML.BT_enter();
-            }
-            else if (ev.event == BUTTON_HELD) {
-                long abortTime = millis();
+        if (encoderButton->isPressed() && !encoderButton->longPressDetected()) {
+            LOG(DEBUG, "Menu: Processing Click");
+            LCDML.BT_enter();
+        }
+        else if (encoderButton->isPressed() && encoderButton->longPressDetected()) {
+            long abortTime = millis();
 
-                if (abortTime - lastMenuAbort > menuAbortInterval) {
-                    LOG(DEBUG, "Menu: Processing button held, aborting.");
-                    LCDML.FUNC_goBackToMenu(1);
-                    lastMenuAbort = abortTime;
-                }
+            if (abortTime - lastMenuAbort > menuAbortInterval) {
+                LOG(DEBUG, "Menu: Processing button held, aborting.");
+                LCDML.FUNC_goBackToMenu(1);
+                lastMenuAbort = abortTime;
             }
         }
     }
 
     last = pos;
-}
-
-void clearMenu() {
 }
 
 void setupMenu() {
@@ -377,14 +376,9 @@ void displayMenu() {
             uint8_t maxi = (_LCDML_DISP_rows) + i;
             uint8_t n = 0;
 
-            // check if this element has children
             if ((tmp = LCDML.MENU_getDisplayedObj()) != NULL) {
-
-                // loop to display lines
                 do {
-                    // check if a menu element has a condition and if the condition be true
                     if (tmp->checkCondition()) {
-                        // display cursor
                         if (n == LCDML.MENU_getCursorPos()) {
                             LOG(DEBUG, "Menu: (x) ");
                         }
@@ -392,9 +386,7 @@ void displayMenu() {
                             LOG(DEBUG, "Menu: ( ) ");
                         }
 
-                        // check the type off a menu element
                         if (tmp->checkType_menu() == true) {
-                            // display normal content
                             LCDML_getContent(content_text, tmp->getID());
                             LOG(DEBUG, content_text);
                         }
@@ -407,13 +399,15 @@ void displayMenu() {
                         i++;
                         n++;
                     }
-                    // try to go to the next sibling and check the number of displayed rows
-                } while (((tmp = tmp->getSibling(1)) != NULL) && (i < maxi));
+                }
+                // try to go to the next sibling and check the number of displayed rows
+                while (((tmp = tmp->getSibling(1)) != NULL) && (i < maxi));
             }
         }
     }
 
-    char content_text[_LCDML_DISP_cols]; // save the content text of every menu element
+    // save the content text of every menu element
+    char content_text[_LCDML_DISP_cols];
     LCDMenuLib2_menu* tmp;
     uint8_t i = LCDML.MENU_getScroll();
     uint8_t maxi = _LCDML_DISP_rows + i;
@@ -466,13 +460,13 @@ void displayMenu() {
             uint8_t scrollbar_block_length = scrollbar_max - n_max;
             scrollbar_block_length = (_LCDML_DISP_box_y1 - _LCDML_DISP_box_y0) / (scrollbar_block_length + _LCDML_DISP_rows);
 
-            if (scrollbar_cur_pos == 0) {                        // top position     (min)
+            if (scrollbar_cur_pos == 0) {
                 u8g2.drawBox(_LCDML_DISP_box_x1 - (_LCDML_DISP_scrollbar_w - 1), _LCDML_DISP_box_y0 + 1, (_LCDML_DISP_scrollbar_w - 2), scrollbar_block_length);
             }
-            else if (scrollbar_cur_pos == (scrollbar_max - 1)) { // bottom position  (max)
+            else if (scrollbar_cur_pos == (scrollbar_max - 1)) {
                 u8g2.drawBox(_LCDML_DISP_box_x1 - (_LCDML_DISP_scrollbar_w - 1), _LCDML_DISP_box_y1 - scrollbar_block_length, (_LCDML_DISP_scrollbar_w - 2), scrollbar_block_length);
             }
-            else {                                               // between top and bottom
+            else {
                 u8g2.drawBox(_LCDML_DISP_box_x1 - (_LCDML_DISP_scrollbar_w - 1), _LCDML_DISP_box_y0 + (scrollbar_block_length * scrollbar_cur_pos + 1), (_LCDML_DISP_scrollbar_w - 2), scrollbar_block_length);
             }
         }

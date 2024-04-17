@@ -452,10 +452,8 @@ const unsigned long intervalDisplay = 100;
 #include <ESP32Encoder.h>
 #include <LCDMenuLib2.h>
 ESP32Encoder encoder;
-#include "button.h"
-button_event_t ev;
-QueueHandle_t button_events = button_init(PIN_BIT(PIN_ROTARY_SW));
 boolean menuOpen = false;
+Switch* encoderButton;
 #include "menu.h"
 #endif
 
@@ -1838,12 +1836,11 @@ void setup() {
     }
 
 #if (FEATURE_ROTARY_MENU == 1)
-    pinMode(PIN_ROTARY_DT, INPUT_PULLUP);
-    pinMode(PIN_ROTARY_CLK, INPUT_PULLUP);
-    pinMode(PIN_ROTARY_SW, INPUT_PULLUP);
-
+    encoder.useInternalWeakPullResistors = puType::up;
     encoder.attachFullQuad(PIN_ROTARY_DT, PIN_ROTARY_CLK);
     encoder.setCount(0);
+
+    encoderButton = new IOSwitch(PIN_ROTARY_SW, GPIOPin::IN_PULLUP, Switch::MOMENTARY, Switch::NORMALLY_OPEN);
 
     setupMenu();
 #endif
@@ -1946,12 +1943,10 @@ void loop() {
 
 #if FEATURE_ROTARY_MENU == 1
     if (!menuOpen) {
-        if (xQueueReceive(button_events, &ev, 1 / portTICK_PERIOD_MS)) {
-            if (ev.event == BUTTON_UP) {
-                menuOpen = true;
-                LOG(DEBUG, "Menu: Opening Menu...\n");
-                displayMenu();
-            }
+        if (encoderButton->isPressed()) {
+            menuOpen = true;
+            LOG(DEBUG, "Menu: Opening Menu...\n");
+            displayMenu();
         }
     }
 
@@ -1980,7 +1975,7 @@ void looppid() {
 #endif
                 mqtt_was_connected = true;
             }
-            // Supress debug messages until we have a connection etablished
+            // Suppress debug messages until we have a connection etablished
             else if (mqtt_was_connected) {
                 LOG(INFO, "MQTT disconnected");
                 mqtt_was_connected = false;
@@ -2081,13 +2076,13 @@ void looppid() {
 
     // Check if PID should run or not. If not, set to manual and force output to zero
 #if OLED_DISPLAY != 0
-    uint8_t supressUpdate = 0;
+    uint8_t suppressUpdate = 0;
 
 #if (FEATURE_ROTARY_MENU)
-    supressUpdate = menuOpen;
+    suppressUpdate = menuOpen;
 #endif
 
-    if (!supressUpdate) {
+    if (!suppressUpdate) {
         unsigned long currentMillisDisplay = millis();
 
         if (currentMillisDisplay - previousMillisDisplay >= intervalDisplay) {

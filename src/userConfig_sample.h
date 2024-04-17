@@ -40,7 +40,7 @@ enum MACHINE {
 #define FEATURE_HEATINGLOGO   1       // 0 = deactivated, 1 = activated
 #define FEATURE_PIDOFF_LOGO   1       // 0 = deactivated, 1 = activated
 #define SHOTTIMERDISPLAYDELAY 3000    // time in ms that shot timer will be shown after brew finished
-#define FEATURE_ROTARY_MENU   0       // 0 = activated, 1 = deactivated
+#define FEATURE_ROTARY_MENU   0       // 0 = deactivated, 1 = activated
 
 #define LANGUAGE 0                    // LANGUAGE = 0 (DE), LANGUAGE = 1 (EN), LANGUAGE = 2 (ES)
 
