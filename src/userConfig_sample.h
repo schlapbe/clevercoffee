@@ -40,6 +40,7 @@ enum MACHINE {
 #define FEATURE_HEATINGLOGO   1       // 0 = deactivated, 1 = activated
 #define FEATURE_PIDOFF_LOGO   1       // 0 = deactivated, 1 = activated
 #define SHOTTIMERDISPLAYDELAY 3000    // time in ms that shot timer will be shown after brew finished
+#define FEATURE_ROTARY_MENU   0       // 0 = activated, 1 = deactivated
 
 #define LANGUAGE 0                    // LANGUAGE = 0 (DE), LANGUAGE = 1 (EN), LANGUAGE = 2 (ES)
 
@@ -83,10 +84,6 @@ enum MACHINE {
 #define FILLTIME       5000  // time in ms the pump is running
 #define FLUSHTIME      10000 // time in ms the 3-way valve is open -> backflush
 #define MAXFLUSHCYCLES 5     // number of cycles the backflush should run, 0 = disabled
-
-// Rotary Encoder Menu
-#define FEATURE_ROTARY_MENU 0 // 0 = off, 1 = on
-#define ROTARY_MENU_DEBUG   0 // 0 = off, 1 = on
 
 // PlatformIO OTA
 #define OTA     true      // true = OTA activated, false = OTA deactivated

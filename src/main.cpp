@@ -1949,9 +1949,7 @@ void loop() {
         if (xQueueReceive(button_events, &ev, 1 / portTICK_PERIOD_MS)) {
             if (ev.event == BUTTON_UP) {
                 menuOpen = true;
-#if ROTARY_MENU_DEBUG == 1
-                debugPrintf("Opening Menu!\n");
-#endif
+                LOG(DEBUG, "Menu: Opening Menu...\n");
                 displayMenu();
             }
         }
@@ -2083,18 +2081,20 @@ void looppid() {
 
     // Check if PID should run or not. If not, set to manual and force output to zero
 #if OLED_DISPLAY != 0
-#if FEATURE_ROTARY_MENU == 1 // only draw the display template if the menu is not open
-    if (!menuOpen) {
+    uint8_t supressUpdate = 0;
+
+#if (FEATURE_ROTARY_MENU)
+    supressUpdate = menuOpen;
 #endif
+
+    if (!supressUpdate) {
         unsigned long currentMillisDisplay = millis();
 
         if (currentMillisDisplay - previousMillisDisplay >= intervalDisplay) {
             previousMillisDisplay = currentMillisDisplay;
             printScreen(); // refresh display
         }
-#if FEATURE_ROTARY_MENU == 1
     }
-#endif
 #endif
 
     if (machineState == kPidDisabled || machineState == kWaterEmpty || machineState == kSensorError || machineState == kEmergencyStop || machineState == kEepromError || machineState == kStandby || brewPIDDisabled) {
