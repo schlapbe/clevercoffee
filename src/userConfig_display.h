@@ -1,14 +1,13 @@
-// config for master!
+// Config for DisplayMenu!
 
 /**
- * @file    userConfig.h
+ * @file    userConfig_sample.h
  * @brief   Values must be configured by the user
  * @version 4.0.0 Master
  *
  */
 
 #pragma once
-
 // firmware version (must match with definitions in the main source file)
 #define USR_FW_VERSION    4
 #define USR_FW_SUBVERSION 0
@@ -33,21 +32,21 @@ enum MACHINE {
 // Display
 #define OLED_DISPLAY          2       // 0 = deactivated, 1 = SH1106 (e.g. 1.3 "128x64), 2 = SSD1306 (e.g. 0.96" 128x64), 3 = SH1106_126x64_SPI
 #define OLED_I2C              0x3C    // I2C address for OLED, 0x3C by default
-#define DISPLAYTEMPLATE       4       // 1 = Standard display template, 2 = Minimal template, 3 = only temperature, 4 = scale template, 20 = vertical display (see git Handbook for further information)
+#define DISPLAYTEMPLATE       1       // 1 = Standard display template, 2 = Minimal template, 3 = only temperature, 4 = scale template, 20 = vertical display (see git Handbook for further information)
 #define DISPLAYROTATE         U8G2_R0 // rotate display clockwise: U8G2_R0 = no rotation; U8G2_R1 = 90°; U8G2_R2 = 180°; U8G2_R3 = 270°
 #define SCREEN_WIDTH          128     // OLED display width, in pixels
 #define SCREEN_HEIGHT         64      // OLED display height, in pixels
-#define FEATURE_SHOTTIMER     1       // 0 = deactivated, 1 = activated (with weight if FEATURE_SCALE activated)
-#define SHOTTIMER_TYPE        1       // 1 = timer 2 = timer with scale
-#define FEATURE_HEATINGLOGO   0       // 0 = deactivated, 1 = activated
+#define FEATURE_SHOTTIMER     1       // 0 = deactivated, 1 = activated
+#define SHOTTIMER_TYPE        2       // 1 = timer 2 = timer with scale
+#define FEATURE_HEATINGLOGO   1       // 0 = deactivated, 1 = activated
 #define FEATURE_PIDOFF_LOGO   1       // 0 = deactivated, 1 = activated
-#define SHOTTIMERDISPLAYDELAY 10000    // time in ms that shot timer will be shown after brew finished
+#define SHOTTIMERDISPLAYDELAY 3000    // time in ms that shot timer will be shown after brew finished
 
 // Display Menu
-#define FEATURE_MENU 1                  // 0 = deactivated, 1 = enabled
+#define FEATURE_MENU 1                 // 0 = deactivated, 1 = enabled
 #define MENU_INPUT   MENUINPUT::ROTARY // MENUINPUT::BUTTONS = input with three buttons, MENUINPUT::ROTARY = input with rotary encoder with shaft switch
 
-#define LANGUAGE 1                    // LANGUAGE = 0 (DE), LANGUAGE = 1 (EN), LANGUAGE = 2 (ES)
+#define LANGUAGE 1                      // LANGUAGE = 0 (DE), LANGUAGE = 1 (EN), LANGUAGE = 2 (ES)
 
 // Connectivity
 #define CONNECTMODE         1              // 0 = offline 1 = WIFI-MODE
@@ -57,17 +56,16 @@ enum MACHINE {
 #define WIFICONNECTIONDELAY 10000          // delay between reconnects in ms
 
 // PID & Hardware
-#define FEATURE_BREWCONTROL   1                       // 0 = deactivated, 1 = activated
-#define BREWCONTROL_TYPE      2                       // 0 = off (no brewing control), 1 = Brew by time (with preinfusion), 2 = Brew by weight (from scale)
+#define BREWCONTROL_TYPE      0                       // 0 = off (no brewing control), 1 = Brew by time (with preinfusion), 2 = Brew by weight (from scale)
 #define FEATURE_BREWDETECTION 1                       // 0 = deactivated, 1 = activated
-#define BREWDETECTION_TYPE    2                       // 1 = Software (FEATURE_BREWCONTROL 0), 2 = Hardware (FEATURE_BREWCONTROL 1), 3 = Optocoupler (FEATURE_BREWCONTROL 0)
+#define BREWDETECTION_TYPE    1                       // 1 = Software (BREWCONTROL_TYPE 0), 2 = Hardware BREWCONTROL_TYPE 1 or 2, 3 = optocoupler for BREWCONTROL_TYPE 0
 #define FEATURE_POWERSWITCH   0                       // 0 = deactivated, 1 = activated
 #define POWERSWITCH_TYPE      Switch::TOGGLE          // Switch::TOGGLE or Switch::MOMENTARY (trigger)
 #define POWERSWITCH_MODE      Switch::NORMALLY_OPEN   // Switch::NORMALLY_OPEN or Switch::NORMALLY_CLOSED
-#define FEATURE_BREWSWITCH    1                       // 0 = deactivated, 1 = activated
+#define FEATURE_BREWSWITCH    0                       // 0 = deactivated, 1 = activated
 #define BREWSWITCH_TYPE       Switch::TOGGLE          // Switch::TOGGLE or Switch::MOMENTARY (trigger)
 #define BREWSWITCH_MODE       Switch::NORMALLY_OPEN   // Switch::NORMALLY_OPEN or Switch::NORMALLY_CLOSED
-#define FEATURE_STEAMSWITCH   1                       // 0 = deactivated, 1 = activated
+#define FEATURE_STEAMSWITCH   0                       // 0 = deactivated, 1 = activated
 #define STEAMSWITCH_TYPE      Switch::TOGGLE          // Switch::TOGGLE or Switch::MOMENTARY (trigger)
 #define OPTOCOUPLER_TYPE      HIGH                    // BREWDETECTION 3 configuration; HIGH or LOW trigger optocoupler
 #define STEAMSWITCH_MODE      Switch::NORMALLY_OPEN   // Switch::NORMALLY_OPEN or Switch::NORMALLY_CLOSED
@@ -81,7 +79,7 @@ enum MACHINE {
 
 #define FEATURE_PRESSURESENSOR 0                      // 0 = deactivated, 1 = activated
 
-// Brew Scale 
+// Brew Scale
 #define FEATURE_SCALE 1 // 0 = deactivated, 1 = activated
 #define SCALE_TYPE    0 // 0 = one HX711 per load cell, 1 = Only a single HX711 with two channels
 #define SCALE_SAMPLES 2 // Load cell sample rate
@@ -112,4 +110,4 @@ enum MACHINE {
 
 // Log level for serial console, valid options (all with Logger::Level:: prefix) are:
 // TRACE, DEBUG, INFO, WARNING, ERROR, FATAL
-#define LOGLEVEL Logger::Level::INFO
+#define LOGLEVEL Logger::Level::DEBUG
